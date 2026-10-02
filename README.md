@@ -8,6 +8,8 @@ small agents.
 
 **Watch:** _TODO — link to the final video_
 
+> **Code: free to reuse for anything (MIT). The song: enjoy it, just don't take it as your own** — see [Licenses](#licenses--the-short-version).
+
 ## Credits
 
 | Role | Credit |
@@ -93,14 +95,23 @@ uv run python ko_align.py --plots    # data/lyrics.json + analysis/qa/line_*.png
 uv run python analyze_ft.py --plots  # data/audio.json
 ```
 
-## Licenses
+## Licenses — the short version
 
-- **Code**: MIT (see `LICENSE`; the original copyright of pdoom-video is kept).
-- **The song** — `audio/feeltheagi.wav`, the lyrics and the melody — **and the music video** are
-  licensed [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) (see
-  `audio/LICENSE`): free for non-commercial use with credit — "Feel The AGI" by 노는사람 (nonunsaram)
-  — and anything made from them must be shared under the same license. The MIT license does not
-  apply to them.
-- **Fonts** keep their own licenses (SIL Open Font License): Archivo, IBM Plex Mono, Cormorant
-  Garamond, LINE Seed KR, Noto Serif KR, Pretendard, Hahmlet, Black Han Sans, Galmuri. The Korean fonts are
-  subsets made by `analysis/make_kr_fonts.py`.
+**The code is yours.** Fork it, change it, put your own song in it and make your own music video —
+commercially too. It's MIT: just keep the copyright notice. That's the whole point of sharing it.
+
+**The song comes with a few strings.** "Feel The AGI" — the track in `audio/`, its lyrics and
+melody, and this music video, which carries it — is a person's own work, so it isn't part of the
+"do anything" deal. It's under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/):
+you're welcome to play it, share it or remix it for fun, as long as you credit
+"Feel The AGI" by 노는사람 (nonunsaram), don't make money from it, and share what you make the same
+way. The `.wav` is here only so you can hit render and see the video come out exactly as it should.
+
+| | License | In one line |
+|---|---|---|
+| Code (`app/`, `analysis/`, `data/`, docs) | MIT (`LICENSE`) | Use it for anything. |
+| The song + the music video | CC BY-NC-SA 4.0 (`audio/LICENSE`) | Credit, non-commercial, share alike. |
+| Fonts | SIL Open Font License | Free, under each font's own license. |
+
+The fonts are Archivo, IBM Plex Mono, Cormorant Garamond, LINE Seed KR, Noto Serif KR, Pretendard,
+Hahmlet, Black Han Sans and Galmuri; the Korean ones are subsets made by `analysis/make_kr_fonts.py`.

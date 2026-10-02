@@ -44,7 +44,7 @@ export default class Credits extends Scene {
     const down = 1 - ease.inOutCubic(clamp((t - (dur - 0.9)) / 0.8));
     const aT = up(0) * down, aC = up(0.35) * down, aN = up(0.7) * down;
     c.font = font(F.archivo(125, 900), 92); c.fillStyle = rgba('paper', aT);
-    c.fillText('Feel the AGI', W / 2, 250 + (1 - up(0)) * 10);
+    c.fillText('Feel The AGI', W / 2, 250 + (1 - up(0)) * 10);
     c.font = font(F.mono(500), 14); c.letterSpacing = '6px'; c.fillStyle = rgba('dawn', aT);
     c.fillText('CREDITS', W / 2 + 3, 302); c.letterSpacing = '0px';
     const role = (t: string, x: number, y: number, a: number) => { c.font = font(F.mono(500), 12); c.letterSpacing = '3px'; c.fillStyle = rgba('ash', a); c.fillText(t, x + 1.5, y); c.letterSpacing = '0px'; };

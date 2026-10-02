@@ -96,9 +96,11 @@ uv run python analyze_ft.py --plots  # data/audio.json
 ## Licenses
 
 - **Code**: MIT (see `LICENSE`; the original copyright of pdoom-video is kept).
-- **The song** — `audio/feeltheagi.wav`, the lyrics and the melody — is **not** covered by the MIT
-  license: © 노는사람 (nonunsaram), all rights reserved. It is included so the video can be rendered
-  from this repository; please don't reuse or redistribute it.
+- **The song** — `audio/feeltheagi.wav`, the lyrics and the melody — **and the music video** are
+  licensed [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) (see
+  `audio/LICENSE`): free for non-commercial use with credit — "Feel The AGI" by 노는사람 (nonunsaram)
+  — and anything made from them must be shared under the same license. The MIT license does not
+  apply to them.
 - **Fonts** keep their own licenses (SIL Open Font License): Archivo, IBM Plex Mono, Cormorant
   Garamond, LINE Seed KR, Noto Serif KR, Pretendard, Hahmlet, Black Han Sans, Galmuri. The Korean fonts are
   subsets made by `analysis/make_kr_fonts.py`.

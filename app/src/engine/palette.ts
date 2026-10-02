@@ -1,17 +1,17 @@
 import { hexToLinear } from './util';
 
-// The whole video lives in a restrained palette: ink, bone, and one signal colour.
-// One rare accent (acid, the shrooms moment) — see docs/TREATMENT.md.
+// Night, paper, and the colours of a dawn sky. Type is paper on night (or night on paper once the
+// light has come); the only warm thing is the light itself — see docs/TREATMENT.md.
 export const HEX = {
-  ink: '#0A0A0B', // background black (slightly warm)
-  ink2: '#151517', // raised black (panels, paper-in-the-dark)
-  graphite: '#5E5B57', // dim lines, secondary text
-  ash: '#9C978F', // mid grey
-  bone: '#EEE9DF', // paper white, primary text
-  signal: '#FF4D12', // hazard orange: the spark, the fuse, P(doom)
-  ember: '#FF8A3D', // hotter, lighter orange for cores/highlights
-  blood: '#C21D0B', // deep red-orange for shadows of signal
-  acid: '#D8FF3C', // acid: only for the shrooms moment
+  ink: '#050608', // night: the background black (slightly cold)
+  ink2: '#0E1015', // raised black (panels, fields)
+  graphite: '#4A4D57', // dim lines, secondary text
+  ash: '#8E919B', // mid grey
+  paper: '#F1EEE6', // paper white: primary type, and the ground of the daylight scenes
+  dawn: '#FFB648', // the light: the caret, the door, the sung syllable
+  glow: '#FFE3AE', // hot core of the light
+  rose: '#FF3D6E', // the first colour of dawn; also refusal, anger, the strike-through
+  indigo: '#23257A', // the sky just before dawn (large soft fields only, never lines)
 } as const;
 
 export type PaletteKey = keyof typeof HEX;

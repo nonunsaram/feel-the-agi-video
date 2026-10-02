@@ -1,5 +1,6 @@
-// The edit: which scene plays when. Boundaries are anchored to lyric lines and snapped
-// to the beat grid, so they follow the aligned data (data/lyrics.json, data/audio.json).
+// The edit: which scene plays when. Boundaries come from the analysed bar grid (data/audio.json,
+// piecewise tempo) and the aligned lyrics (data/lyrics.json); nothing is hard-coded in seconds
+// except where a cut sits on a drum hit that is looked up in the onset lists.
 import type { TimelineEntry } from './engine/engine';
 import type { SceneClass } from './engine/scene';
 import type { Lyrics } from './engine/lyrics';
@@ -12,71 +13,58 @@ const scene = (name: string) => () => {
   return m ? m() : Promise.reject(new Error(`scene module not found: scenes/${name}.ts`));
 };
 
+/** Length of the silent end-credits card after the song (s). */
+export const CREDITS = 8;
+
 export function makeTimeline(ly: Lyrics, au: AudioData): TimelineEntry[] {
-  /** Cut on the last beat at/before the first word of the matching line (never after the word). */
-  const cut = (q: string, nth = 0, tol = 0.02) => {
-    const s = ly.get(q, nth).words[0]!.start;
-    return au.timeOfBeat(Math.floor(au.beatAt(s + tol)));
+  /** Time of bar k (1-based) plus `beat` beats. */
+  const bar = (k: number, beat = 0) => au.timeOfBeat((k - 1) * 4 + beat);
+  /** The strongest onset of a kind in a window, or the fallback. */
+  const hit = (kind: string, t0: number, t1: number, fallback: number) => {
+    const ev = au.events(kind, t0, t1);
+    return ev.length ? ev.reduce((a, b) => (b[1] > a[1] ? b : a))[0] : fallback;
   };
-  /** Nearest downbeat to the end of a line. */
-  const after = (q: string, nth = 0) => {
-    const e = ly.get(q, nth).end;
-    return au.downbeats.reduce((b, d) => (Math.abs(d - e) < Math.abs(b - e) ? d : b), au.downbeats[0] ?? e);
-  };
+  const sec = (name: string) => ly.section(name);
 
   const b = {
-    loss: cut('There was a sudden drop'),
-    pre1: cut('ChatGPT, please'),
-    hook1: cut("I'm upping", 0),
-    room: cut("'cause the future goes FOOM"),
-    shog: cut("See through the shoggoth"),
-    space: cut('We had a stable'),
-    pre2: cut('Sydney'),
-    hook2: cut("I'm upping", 1),
-    ascent: cut('I hear the basilisk'),
-    bureau: cut('That was safe enough'),
-    left: cut('Sharp left turn'),
-    pre3: cut('Gato'),
-    hook3: cut("I'm upping", 2),
-    clips: cut('as paperclips'),
-    fuse: cut('Too late now'),
-    stack: cut('transformers all the way'),
-    dense: cut('Post-Chinchilla', 0, 0.05), // 'Post' starts 32 ms before its beat; don't cut 'disobey' in half
-    hook4: cut("I'm upping", 3),
-    loom: cut('Just as foretold'),
-    ilya: cut('What did Ilya'),
-    // the outro section from the music analysis if present (the last word may be a long held note)
-    outro: au.sections.find((x) => x.name === 'outro')?.start ?? after('Was it all for show'),
+    // the boom two beats before the first "A" of hook 1
+    hook1: bar(9, 2),
+    // verse 1 starts with the pickup "다" on the last beat of bar 17
+    verse1: bar(17, 3),
+    hook2: bar(34),
+    hook3: bar(42),
+    pre: bar(50),
+    // the 808 that opens the build, as the pre-hook's last held note ends
+    build: hit('bass', 90.0, 90.6, bar(57, 2)),
+    // the last beat before verse 2's downbeat ("다" is its pickup)
+    verse2: bar(65, 3),
+    // the hit after "폐업"
+    outro: hit('kick', 127.85, 128.15, bar(81, 1.5)),
     end: au.duration,
   };
+  // sanity: the grid and the alignment must agree (a line sung in the wrong window means stale data)
+  const near = (name: string, t: number, tol: number) => {
+    const l = sec(name)[0];
+    if (!l || Math.abs(l.start - t) > tol) console.warn(`timeline: section ${name} starts at ${l?.start}, expected about ${t}`);
+  };
+  near('hook1', bar(10), 0.4); near('verse1', bar(18), 0.5); near('hook2', bar(34), 0.4); near('hook3', bar(42), 0.4);
+  near('prehook', bar(50), 0.7); near('verse2', bar(66), 0.5);
 
   const E = (id: string, file: string, start: number, end: number, extra: Partial<TimelineEntry> = {}): TimelineEntry =>
     ({ id, load: scene(file), start, end, ...extra });
 
   return [
-    E('open', 'open', 0, b.loss),
-    E('loss', 'loss', b.loss, b.pre1),
-    E('prompt1', 'prompt', b.pre1, b.hook1, { params: { variant: 'chatgpt' } }),
-    E('hook1', 'hook', b.hook1, b.room, { params: { n: 1 } }),
-    E('room', 'room', b.room, b.shog),
-    // (its half-res G-buffer sparkles along the silhouettes from one sub-frame to the next: noise the adaptive
-    // sampler would chase to 324 sub-frames, though 108 already can't be told from 324)
-    E('shoggoth', 'shoggoth', b.shog, b.space, { maxSamples: 108 }),
-    E('spacetime', 'spacetime', b.space, b.pre2),
-    E('prompt2', 'prompt', b.pre2, b.hook2, { params: { variant: 'sydney' } }),
-    E('hook2', 'hook', b.hook2, b.ascent, { params: { n: 2 } }),
-    E('ascent', 'ascent', b.ascent, b.bureau),
-    E('bureau', 'bureau', b.bureau, b.left),
-    E('leftturn', 'leftturn', b.left, b.pre3),
-    E('prompt3', 'prompt', b.pre3, b.hook3, { params: { variant: 'gato' } }),
-    E('hook3', 'hook', b.hook3, b.clips, { params: { n: 3 } }),
-    E('paperclips', 'paperclips', b.clips, b.fuse),
-    E('fuse', 'fuse', b.fuse, b.stack),
-    E('stack', 'stack', b.stack, b.dense),
-    E('dense', 'dense', b.dense, b.hook4),
-    E('hook4', 'hook', b.hook4, b.loom, { params: { n: 4 } }),
-    E('loom', 'loom', b.loom, b.ilya),
-    E('ilya', 'ilya', b.ilya, b.outro),
-    E('outro', 'outro', b.outro, b.end),
+    E('coldopen', 'coldopen', 0, 1.2),
+    E('whisper1', 'whisper', 1.2, b.hook1, { params: { n: 1, section: 'intro' } }),
+    E('litany1', 'litany', b.hook1, b.verse1, { params: { n: 1, section: 'hook1' } }),
+    E('grind1', 'grind', b.verse1, b.hook2, { params: { pass: 1, section: 'verse1' } }),
+    E('litany2', 'litany', b.hook2, b.hook3, { params: { n: 2, section: 'hook2' } }),
+    E('litany3', 'litany', b.hook3, b.pre, { params: { n: 3, section: 'hook3' } }),
+    E('whisper2', 'whisper', b.pre, b.build, { params: { n: 2, section: 'prehook' } }),
+    E('door', 'door', b.build, b.verse2),
+    E('grind2', 'grind', b.verse2, b.outro, { params: { pass: 2, section: 'verse2' } }),
+    E('end', 'end', b.outro, b.end),
+    // after the song: black, then the credits (a silent tail)
+    E('credits', 'credits', b.end, b.end + CREDITS),
   ];
 }

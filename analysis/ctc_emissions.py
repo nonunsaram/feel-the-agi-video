@@ -51,7 +51,7 @@ def compute(name, chunk_s=20.0, ctx_s=3.0, device=None, source="vocals"):
 
 
 if __name__ == "__main__":
-    srcs = sys.argv[1:] or ["vocals", "lead", "vocL", "vocR"]
+    srcs = sys.argv[1:] or ["vocals", "vocL", "vocR"]
     for src in srcs:
         for n in ("mms", "lv60k"):
             compute(n, source=src)

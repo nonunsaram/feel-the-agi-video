@@ -5,7 +5,7 @@ import { AudioData } from './audio';
 import { Lyrics } from './lyrics';
 import { Compositor, FSPass, W, H, PW, PH, SCALE, SS_TAP, makeRT, clearRT } from './gl';
 import { DEFAULT_POST, Post, SHOULDER_GLSL, type PostParams } from './post';
-import { Hud, PDoom, type Caption } from './hud';
+import { Hud } from './hud';
 import type { Frame, Scene, SceneClass, SceneCtx, PostOverrides } from './scene';
 import { loadFonts } from './type';
 import { loadStrokeFonts } from './stroke';
@@ -16,8 +16,6 @@ export interface TimelineEntry {
   load: () => Promise<{ default: SceneClass }>;
   start: number;
   end: number;
-  /** Plate caption shown bottom-right at the start of this entry. */
-  caption?: { fig: string; text: string; dur?: number; delay?: number };
   /** Default post overrides for this entry (the scene's own overrides win). */
   post?: PostOverrides;
   /** Free-form params handed to the scene as ctx.params. */
@@ -79,7 +77,7 @@ export class Engine {
   private lastT = -1;
   lastPost: PostParams = { ...DEFAULT_POST };
   errors: string[] = [];
-  /** Suppress the HUD (captions, crop marks) — used when rendering plate thumbnails. */
+  /** Suppress the overlay layer. */
   hudOff = false;
 
   timeline: TimelineEntry[] = [];
@@ -143,11 +141,7 @@ export class Engine {
     this.timeline = this.makeTimeline(this.lyrics, this.audio);
     this.ctx = { renderer: this.renderer, audio: this.audio, lyrics: this.lyrics, comp: this.comp, W, H, id: '', params: {}, start: 0, end: 0 };
     this.post = new Post();
-    const captions: Caption[] = this.timeline.filter((e) => e.caption).map((e) => {
-      const d = e.caption!.delay ?? 0.3;
-      return { start: e.start + d, end: e.start + d + (e.caption!.dur ?? 4.5), fig: e.caption!.fig, text: e.caption!.text };
-    });
-    this.hud = new Hud(new PDoom(this.lyrics), captions);
+    this.hud = new Hud();
     const entries = only ? this.timeline.filter(only) : this.timeline;
     await Promise.all(entries.map((e) => this.loadEntry(e)));
   }
@@ -176,7 +170,8 @@ export class Engine {
     this.lastT = -1;
   }
 
-  get duration() { return this.audio.duration; }
+  /** The song, plus any silent tail the timeline adds after it (the end credits). */
+  get duration() { return Math.max(this.audio.duration, ...this.timeline.map((e) => e.end)); }
 
   private frameFor(e: TimelineEntry, t: number, dt: number, seeked: boolean, preroll: boolean, under: THREE.Texture | null, tin: number, tout: number): Frame {
     const beat = this.audio.beatAt(t), bar = this.audio.barAt(t);
@@ -266,7 +261,7 @@ export class Engine {
       outTex = this.avgRT.texture;
     }
     this.lastSamples = n;
-    const hudTex = this.hud.draw(t, { opacity: this.hudOff ? 0 : post.hud, frame: post.frame, readout: post.pdoom, paper: post.paper, pdoomOverride: post.pdoomText, corruption: post.hudCorruption });
+    const hudTex = this.hud.draw(t, this.hudOff ? 0 : post.hud);
     this.post.render(r, outTex, hudTex, this.finalRT, post, t);
     this.lastPost = post;
     if (toScreen) {
@@ -310,6 +305,7 @@ export class Engine {
 
     active.forEach((e, idx) => {
       const rec = this.loaded.get(e.id);
+      if (!rec) return; // not loaded at all (?only= left it out): skip it
       const rt = this.rts[idx % this.rts.length]!;
       const prev = active[idx - 1], next = active[idx + 1];
       const tin = prev ? Math.min(1, (t - e.start) / Math.max(1e-3, prev.end - e.start)) : 1;

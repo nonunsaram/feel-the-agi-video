@@ -105,7 +105,7 @@ def fit_grid(drums, mix, sr, duration):
         return np.maximum.reduce([o[idx - 1], o[idx], o[idx + 1]]).mean()
 
     best = (0, None, None)
-    for bpm in np.arange(125.0, 138.0, 0.02):
+    for bpm in np.arange(140.0, 160.0, 0.02):
         P = 60 / bpm
         for off in np.arange(0, P, 0.004):
             s = score(P, off)

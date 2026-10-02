@@ -12,3 +12,6 @@ analysis/__pycache__/
 analysis/stems/
 analysis/work/
 analysis/qa/
+
+# pdoom's original scenes and assets (kept locally for reference only)
+_pdoom_reference/

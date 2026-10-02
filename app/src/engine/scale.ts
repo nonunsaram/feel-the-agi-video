@@ -9,3 +9,6 @@ function readScale() {
 
 /** Physical pixels per logical pixel of the output (integer 1..4, default 1). */
 export const SCALE = readScale();
+
+/** The climactic effects (kaleidoscope, smears, strobes) from the experimental cut; `?bold=0` turns them off. */
+export const BOLD = !(typeof location !== 'undefined' && new URLSearchParams(location.search).get('bold') === '0');

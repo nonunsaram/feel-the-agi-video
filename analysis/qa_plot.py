@@ -4,6 +4,13 @@ import numpy as np
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+from matplotlib import font_manager
+for _f in ("/System/Library/Fonts/AppleSDGothicNeo.ttc", "/System/Library/Fonts/Supplemental/AppleGothic.ttf"):
+    try:
+        font_manager.fontManager.addfont(_f)
+    except Exception:
+        pass
+plt.rcParams["font.family"] = ["Apple SD Gothic Neo", "AppleGothic", "sans-serif"]
 import librosa
 
 _cache = {}
@@ -19,7 +26,7 @@ def _vocal():
 COLORS = ["tab:red", "tab:blue", "tab:green", "tab:purple", "tab:orange", "k"]
 
 
-def plot(t0, t1, tracks, out, title="", marks=None):
+def plot(t0, t1, tracks, out, title="", marks=None, grid=(60 / 132, 0.708)):
     """tracks: list of (name, [(label, start, end), ...])."""
     y, sr, f = _vocal()
     t0 = max(0.0, t0)
@@ -68,7 +75,7 @@ def plot(t0, t1, tracks, out, title="", marks=None):
                 a_.axvline(s, color=c, lw=0.9, alpha=0.8, ls="-" if k == 0 else "--")
         ax3.text(t0, yk - 0.3, name, fontsize=8, color=c)
     # 8th-note grid (132 BPM) -- beats solid, off-beats dotted
-    P, OFF = 60 / 132, 0.708
+    P, OFF = grid
     n0, n1 = int(np.floor((t0 - OFF) / P * 2)), int(np.ceil((t1 - OFF) / P * 2))
     for n in range(n0, n1 + 1):
         tb = OFF + n * P / 2

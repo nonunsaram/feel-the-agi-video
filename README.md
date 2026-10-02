@@ -1,34 +1,63 @@
-# I'm Upping My P(doom) — music video
+# Feel The AGI — code-rendered music video
 
-A generative, code-rendered music video with word-synced karaoke typography. Every frame is a deterministic function of song time, so the live preview in the browser and the offline 1080p60 (or 4K60) export are identical.
+A music video for the song **"Feel The AGI"** (Korean hyperpop, 2:15) in which every frame is code: a
+deterministic function of song time, synced to the sung syllables, rendered offline to 4K60.
+Humans are special and not special; AI is a companion and the sum of human heritage — the video tells
+that story with a pictogram person, liquid-gold type, a prism, a door of light and a legion of
+small agents.
 
-**Watch it in 4K on YouTube:** https://www.youtube.com/watch?v=5EoO5413dBY
+**Watch:** _TODO — link to the final video_
 
-The YouTube upload is an earlier render: it averages only 4 sub-frames per frame for motion blur, so fast motion shows stepped copies, and YouTube's compression smears the film grain. For the best version, render it locally (see [Render the video](#render-the-video)): the current code picks up to 324 sub-frames per frame where the motion needs them.
+## Credits
 
-The video was made with Claude (Opus 5.5) in Claude Code: the concept and treatment, the lyric alignment and audio analysis, the renderer, every scene and the renders were all worked out in conversation with Claude.
+| Role | Credit |
+|---|---|
+| **MUSIC** |  |
+| Lyrics | 노는사람 (nonunsaram) |
+| Topline melody | 노는사람 (nonunsaram) |
+| Vocals · arrangement | Suno |
+| **MUSIC VIDEO** |  |
+| Creative direction · review | 노는사람 (nonunsaram) |
+| Concept · treatment | Claude Opus 5.5 |
+| Lyric & beat sync | Claude Opus 5.5 |
+| Typography | Claude Opus 5.5 |
+| 3D design · modeling | Claude Opus 5.5 |
+| Shaders | Claude Opus 5.5 |
+| Motion · camera | Claude Opus 5.5 |
+| Rendering pipeline | Claude Opus 5.5 |
+| Edit | Claude Opus 5.5 |
+| **BUILT WITH** |  |
+| Video engine | [mexicat/pdoom-video](https://github.com/mexicat/pdoom-video) (MIT) |
+| Rendering | three.js |
+| Vocal alignment | Demucs · MMS-FA (torchaudio) · Whisper |
+| Typefaces | LINE Seed KR · Noto Serif KR · Archivo · IBM Plex Mono · Cormorant Garamond |
 
-The song is not ours: see [Credits](#credits) for who wrote and made it.
-
-The concept, style bible and plate-by-plate treatment are in [`docs/TREATMENT.md`](docs/TREATMENT.md). The engine and scene API are documented in [`docs/ENGINE.md`](docs/ENGINE.md).
+The renderer core (`app/src/engine`), the render script and the analysis approach come from
+pdoom-video; the song, timing data, treatment, timeline and every scene here are new. Made over 15
+review rounds between the artist and Claude — `docs/` keeps the treatment and the plans.
 
 ## Layout
 
-- `audio/pdoom.mp3` — the song (the Claude-Pop version, see Credits).
-- `lyrics/lyrics.src.js` — the original line-level lyrics (approximate timings).
-- `analysis/` — Python (uv) tools that produced the timing data: Demucs stem separation, CTC forced alignment cross-checked with Whisper, beat/downbeat/onset analysis. See `analysis/align.py` and `analysis/analyze.py`.
-- `data/lyrics.json` — word-level (and some syllable-level) lyric timings.
-- `data/audio.json` — tempo (132.007 BPM), beats, downbeats, sections, drum/vocal onsets and loudness envelopes.
-- `app/` — the renderer: TypeScript + three.js, bun + Vite.
-  - `src/engine/` — renderer core: timeline playback, post-processing (bloom, halation, grain), typography (Archivo, IBM Plex Mono, Cormorant Garamond, single-stroke plotter fonts), GPU line batches, HUD.
-  - `src/scenes/` — one module per plate (`open`, `loss`, `prompt`, `hook`, `room`, `shoggoth`, `spacetime`, `ascent`, `bureau`, `leftturn`, `paperclips`, `fuse`, `stack`, `dense`, `loom`, `ilya`, `outro`) plus shared motifs.
-  - `src/timeline.ts` — the edit: scene windows anchored to lyric lines and snapped to the beat grid.
-  - `scripts/render.ts` — offline renderer (headless Chrome → raw frames over WebSocket → ffmpeg).
-- `out/` — renders (not in the repo).
+- `audio/feeltheagi.wav` — the song.
+- `data/lyrics.json` — per-syllable lyric timings (63 lines). `data/audio.json` — beat grid
+  (piecewise tempo: 150.27 BPM until 1:18, ~150.8 in the pre-hook, 151.94 from the build-up on),
+  sections, drum/bass/vocal onsets, loudness envelopes.
+- `analysis/` — Python (uv) tools that made the timing data:
+  `ko_align.py` (Demucs vocal stem → MMS_FA CTC forced alignment of uroman-romanized Hangul
+  syllables, cross-checked with Whisper, with the manual fixes listed at the top of the file),
+  `analyze_ft.py` (beat grid, envelopes, onsets), `ov.py` (QA plots).
+- `app/` — the renderer (TypeScript + three.js, bun + Vite).
+  - `src/scenes/` — `whisper` (intro, pre-hook), `litany` (the three hooks), `grind` (the two verses),
+    `door` (the build-up), `end` (outro), plus `_kit.ts` (syllable layout, caret/light layer, glitch
+    compositor, sky) and `_clock.ts` (the countdown to dawn).
+  - `src/timeline.ts` — the edit.
+  - `scripts/render.ts` — offline renderer (headless Chrome → raw frames → ffmpeg).
+- `out/` — renders and previews (not in the repo).
 
 ## Requirements
 
-[bun](https://bun.sh), Google Chrome (the offline renderer drives it headless through playwright-core) and ffmpeg with libx264. The analysis tools need [uv](https://docs.astral.sh/uv/); the renderer doesn't.
+[bun](https://bun.sh), Google Chrome, ffmpeg with libx264. The analysis tools need
+[uv](https://docs.astral.sh/uv/); the renderer doesn't.
 
 ## Preview
 
@@ -38,62 +67,38 @@ bun install
 bunx vite
 ```
 
-Open http://localhost:5173 and use the keys below. `?t=23` starts at a given time.
+Open http://localhost:5173 (space = play/pause, ←/→ = ±1 s, `[`/`]` = previous/next scene, `l` = loop
+the scene, `h` = hide the UI, `?t=90` starts at a time).
 
-| Key | Action |
-|---|---|
-| space | play / pause |
-| ← / → | seek ±1 s (±5 s with shift) |
-| `,` / `.` | step one frame |
-| `[` / `]` | previous / next scene |
-| `l` | loop the current scene |
-| `h` | hide the UI |
-
-The preview renders in real time on a recent Mac. The export is not real time and is heavier.
-
-## Render the video
+## Render
 
 ```sh
 cd app
-bun scripts/render.ts video --samples auto --shutter 0.2 --out ../out/pdoom.mp4
+# final: 15 s segments, one headless Chrome at a time (resumable), muxed with the song.
+# MV_OUT picks the output folder (default ../out); --scale 2 renders 3840×2160
+MV_OUT=../out ./scripts/render-segments.sh feel-the-agi_2160p60 --scale 2 --samples 8 --shutter 0.25 --crf 16 --preset medium
+bun scripts/render.ts video --samples auto --shutter 0.2 --out ../out/feel-the-agi.mp4   # single pass, 1080p60
+bun scripts/render.ts video --samples 1 --preset veryfast --crf 22 --out ../out/draft.mp4 # quick draft
+bun scripts/render.ts sheet --from 90 --to 103 --n 16 --cols 4 --out ../out/wip/door.png  # contact sheet
 ```
-
-- **Output:** 1920×1080 at 60 fps, x264 CRF 16, AAC audio.
-- **Motion blur:** every frame is the average of many sub-frames spread over a short shutter (`--shutter 0.2`, a fifth of the frame time), so fast motion leaves a continuous streak instead of a few stepped copies. `--samples auto` picks the count per frame: 12 for a still frame, 36 for ordinary camera motion, 108 or 324 for whips, slams and fast zooms. It stops once more sub-frames would no longer change the image by more than `--tol` levels of 255 (default 3). `--samples N` takes a fixed N instead (`--samples 4` makes a quick draft). How it works: "Motion blur and sampling" in [`docs/ENGINE.md`](docs/ENGINE.md).
-- **Other modes:** `stills`, `sheet` (contact sheets, `--cuts` for every scene boundary), `perf`, and `plates` (regenerates `public/plates/`, the stills used by the outro's rewind montage; rerun it after changing a scene).
-
-### 4K
-
-```sh
-cd app
-bun scripts/render.ts video --scale 2 --samples auto --shutter 0.2 --x264 aq-mode=3:rc-lookahead=30 --out ../out/pdoom-4k.mp4
-```
-
-- **Output:** a true 3840×2160 render (not an upscale): every layer, line and shader is rendered at the physical resolution. Scenes are laid out in 1920×1080 logical pixels, so the 4K frame looks like the 1080p one, only sharper.
-- **Cost:** GPU-bound. A frame takes from about 40 ms (a still frame) to over 10 s (the ray-marched rooms at 108–324 sub-frames). The whole song took about 2.5 hours on an M5 Pro, rendered as segments in two parallel pipelines (`--from`/`--to`, then a lossless concat). Each pipeline uses about 5 GB for headless Chrome plus about 4 GB for ffmpeg; the shorter x264 lookahead above keeps ffmpeg's memory down.
-- **Encoding:** the film grain is rendered per 4K pixel, which is expensive to encode: at the default CRF 16 the file runs at about 670 Mbit/s (13 GB for the song, 8× the 1080p file), `--crf 18` gives about 450 Mbit/s and `--crf 20` about 230 Mbit/s.
-- `--scale 2` works with every mode. `stills` then saves full-resolution PNGs, and `perf` measures 4K frame times. In the browser preview, add `&scale=2` to the URL.
 
 ## Regenerate the timing data
 
-The committed `data/*.json` files are all the renderer needs. Regenerating them needs the stems and intermediates, which are not in the repo:
-
-- **Stems:** Demucs `htdemucs_ft` into `analysis/stems/htdemucs_ft/pdoom/` (`uv run python -m demucs -n htdemucs_ft -o stems ../audio/pdoom.mp3`), plus the lead vocal from a mel-band-roformer karaoke model (audio-separator) in `analysis/stems/karaoke/lead.wav`.
-- **Intermediates:** `ctc_emissions.py`, `whisper_run.py` and `vocal_feats.py` write them to `analysis/work/`. The pipeline is described at the top of `analysis/align.py`.
-
 ```sh
 cd analysis
-uv run python align.py      # data/lyrics.json
-uv run python analyze.py    # data/audio.json
+uv sync
+uv run python -m demucs -n htdemucs_ft -d mps -o stems ../audio/feeltheagi.wav
+uv run python ctc_emissions.py && uv run python vocal_feats.py && uv run python whisper_ko.py
+uv run python ko_align.py --plots    # data/lyrics.json + analysis/qa/line_*.png
+uv run python analyze_ft.py --plots  # data/audio.json
 ```
 
-The models download about 4 GB of weights into `analysis/.cache/`; delete that folder afterwards.
+## Licenses
 
-## Credits
-
-- **Song:** "I'm Upping My P(doom)". The lyrics are by [osmarks](https://docs.osmarks.net/hypha/p%28doom%29_song_objectively_correct_interpretation), built on an opening verse and chorus by [MusicPerson](https://www.udio.com/creators/MusicPerson), with lines suggested on the EleutherAI Discord and help from Claude on the outro and final chorus. The original was generated with Udio and released in November 2024 ([YouTube](https://www.youtube.com/watch?v=uEB5E67vcPA)). This video uses the "Claude-Pop" version made with Suno, posted by [deckard (@slimer48484)](https://x.com/slimer48484/status/2097752569212756134) in September 2026.
-- **Fonts:** Archivo, IBM Plex Mono and Cormorant Garamond (SIL Open Font License). Single-stroke EMS and Hershey fonts via the `hersheytext` package (OFL / public domain).
-
-## License
-
-The code is released under the [MIT License](LICENSE). The fonts in `app/public/fonts/` keep their own licenses (see Credits), and the song and lyrics (`audio/`, `lyrics/`, `data/lyrics.json`) are not covered by it: they belong to their authors (see Credits).
+- **Code**: MIT (see `LICENSE`; the original copyright of pdoom-video is kept).
+- **The song** — `audio/feeltheagi.wav`, the lyrics and the melody — is **not** covered by the MIT
+  license: © 노는사람 (nonunsaram), all rights reserved. It is included so the video can be rendered
+  from this repository; please don't reuse or redistribute it.
+- **Fonts** keep their own licenses (SIL Open Font License): Archivo, IBM Plex Mono, Cormorant
+  Garamond, LINE Seed KR, Noto Serif KR, Pretendard, Hahmlet, Black Han Sans, Galmuri. The Korean fonts are
+  subsets made by `analysis/make_kr_fonts.py`.

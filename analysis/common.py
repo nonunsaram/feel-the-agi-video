@@ -16,8 +16,8 @@ for var, sub in [("TORCH_HOME", "torch"), ("HF_HOME", "hf"), ("HF_HUB_CACHE", "h
     os.environ.setdefault(var, str(CACHE / sub))
     (CACHE / sub).mkdir(parents=True, exist_ok=True)
 
-AUDIO = PROJECT / "audio" / "pdoom.mp3"
-STEMS = ROOT / "stems" / "htdemucs_ft" / "pdoom"
+AUDIO = PROJECT / "audio" / "feeltheagi.wav"
+STEMS = ROOT / "stems" / "htdemucs_ft" / "feeltheagi"
 LYRICS_SRC = PROJECT / "lyrics" / "lyrics.src.js"
 DATA = PROJECT / "data"
 QA = ROOT / "qa"
@@ -40,7 +40,7 @@ def load_lyrics_src():
 # (ffmpeg / libsndfile / browsers) is our time reference, so stems are shifted
 # earlier by 1015 samples @ 44.1 kHz (measured by cross-correlation, constant
 # over the whole song).
-STEM_OFFSET_SAMPLES = 1015
+STEM_OFFSET_SAMPLES = 0  # wav source: stems are already in the song timeline
 STEM_OFFSET_SEC = STEM_OFFSET_SAMPLES / 44100
 
 

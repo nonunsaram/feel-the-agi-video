@@ -22,6 +22,14 @@ for (const wt of [400, 600]) {
 for (const [n, f] of [['300', 'Light'], ['400', 'Regular'], ['500', 'Medium'], ['600', 'SemiBold'], ['700', 'Bold']] as const)
   DEFS.push({ family: `Plex-${n}`, file: `src/IBMPlexMono-${f}.ttf` });
 DEFS.push({ family: 'PlexItalic-400', file: 'src/IBMPlexMono-Italic.ttf' });
+// Korean (subsets: KS X 1001 Hangul + ASCII, see analysis/make_kr_fonts.py)
+for (const wt of [300, 500, 700]) DEFS.push({ family: `Pretendard-${wt}`, file: `kr/Pretendard-${wt}.ttf` });
+for (const wt of [200, 400]) DEFS.push({ family: `Hahmlet-${wt}`, file: `kr/Hahmlet-${wt}.ttf` });
+for (const wt of [100, 300]) DEFS.push({ family: `GothicA1-${wt}`, file: `kr/GothicA1-${wt}.ttf` });
+for (const wt of [100, 400, 700]) DEFS.push({ family: `LINESeedKR-${wt}`, file: `kr/LINESeedKR-${wt}.otf` });
+for (const wt of [300, 500, 900]) DEFS.push({ family: `NotoSerifKR-${wt}`, file: `kr/NotoSerifKR-${wt}.ttf` });
+DEFS.push({ family: 'Galmuri11', file: 'kr/Galmuri11.ttf' }, { family: 'Galmuri11-Bold', file: 'kr/Galmuri11-Bold.ttf' });
+DEFS.push({ family: 'PlexSansKR-500', file: 'kr/PlexSansKR-500.ttf' });
 
 /** Convenience family names. */
 export const F = {
@@ -41,6 +49,20 @@ export const F = {
     if (italic) return 'PlexItalic-400';
     return `Plex-${nearest([300, 400, 500, 600, 700], weight)}`;
   },
+  /** Korean grotesk (Pretendard; also covers Latin): the everyday voice. weight 300/500/700/900 */
+  kr(weight = 500): string { return `Pretendard-${nearest([300, 500, 700], weight)}`; },
+  /** Korean serif (Noto Serif KR): the whispered / sacred register. weight 300/500/900 */
+  krSerif(weight = 500): string { return `NotoSerifKR-${nearest([300, 500, 900], weight)}`; },
+  /** Hahmlet: the Korean display face (a contemporary serif), 200 or 400. */
+  krDisplay(weight = 200): string { return `Hahmlet-${weight < 300 ? 200 : 400}`; },
+  /** LINE Seed Sans KR (100 thin / 400 regular / 700 bold): the main Korean voice since revision 3. */
+  seed(weight = 400): string { return `LINESeedKR-${nearest([100, 400, 700], weight)}`; },
+  /** Gothic A1 Thin/Light: hairline Korean sans. */
+  krThin(weight = 100): string { return `GothicA1-${weight < 200 ? 100 : 300}`; },
+  /** Galmuri 11: a pixel font with Hangul — the machine's Korean voice. Set it at multiples of 12 px. */
+  krPixel(bold = false): string { return bold ? 'Galmuri11-Bold' : 'Galmuri11'; },
+  /** IBM Plex Sans KR: Korean next to Plex Mono in UI text. */
+  krUi(): string { return 'PlexSansKR-500'; },
 };
 
 function nearest(list: number[], v: number) {

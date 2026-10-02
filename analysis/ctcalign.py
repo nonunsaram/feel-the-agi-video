@@ -25,8 +25,6 @@ AIDX = {c: i for i, c in enumerate(ALPHA)}
 
 def _common_logp(model):
     em = np.load(common.WORK / f"emission_{model}.npy").astype(np.float64)
-    if len(em) < N_FRAMES:
-        em = np.concatenate([em, np.repeat(em[-1:], N_FRAMES - len(em), 0)])
     if model.startswith("mms"):
         labs = list(torchaudio.pipelines.MMS_FA.get_labels(star=None))
     else:
@@ -46,6 +44,9 @@ def emissions(kind):
     """kind: '<model>[_<source>]' with model in mms|lv60k|fused, source in
     ''(demucs mono)|lead|vocL|vocR; or 'fused6' = mixture of both models on
     mono, left and right channels."""
+    if kind == "mms3":
+        es = [_common_logp("mms" + s) for s in ("", "_vocL", "_vocR")]
+        return np.logaddexp.reduce(np.stack(es), axis=0) - np.log(len(es))
     if kind == "fused6":
         es = [_common_logp(m + s) for m in ("mms", "lv60k") for s in ("", "_vocL", "_vocR")]
         return np.logaddexp.reduce(np.stack(es), axis=0) - np.log(len(es))

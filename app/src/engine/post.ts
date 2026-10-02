@@ -23,22 +23,16 @@ export interface PostParams {
   ca: number; // chromatic aberration in px at the frame edge
   grain: number; // grain amplitude (sRGB units), ~0.04-0.1
   vignette: number; // 0..1
-  hud: number; // HUD opacity multiplier (crop marks, readout)
-  /** 0..1: the crop-mark frame (1 = in place, 0 = flown out past the edges). Only the bookends use it: the opening's sheet and the outro's regenerate/loop. */
-  frame: number;
-  /** Opacity of the corner P(doom) readout — 0 by default; P(doom) is staged inside plates. */
-  pdoom: number;
-  /** 0..1: the frame is light (bone paper) — the HUD switches captions and crop marks to ink. */
-  paper: number;
+  hud: number; // overlay opacity multiplier
   fade: number; // fade to black 0..1
-  flash: number; // additive bone-white flash 0..1+
+  flash: number; // additive paper-white flash 0..1+
   shake: [number, number]; // frame offset in px
   zoom: number; // frame zoom (1 = none), for punch-ins on hits
-  invert: number; // 0..1 invert (ink <-> bone), applied before grain
-  /** Replace the HUD P(doom) digits (e.g. 'NaN'). */
-  pdoomText?: string;
-  /** 0..1 glitch the HUD readout. */
-  hudCorruption?: number;
+  invert: number; // 0..1 invert (ink <-> paper), applied before grain
+  /** kaleidoscope: number of mirrored segments (0 = off) and its mix 0..1 */
+  kaleido?: number; kaleidoMix?: number;
+  /** horizontal smear (px) of bright pixels, pixel-sort look */
+  smear?: number;
 }
 
 export const DEFAULT_POST: PostParams = {
@@ -52,9 +46,6 @@ export const DEFAULT_POST: PostParams = {
   grain: 0.055,
   vignette: 0.35,
   hud: 1,
-  frame: 0,
-  pdoom: 0,
-  paper: 0,
   fade: 0,
   flash: 0,
   shake: [0, 0],
@@ -123,11 +114,19 @@ ${SCALE === 1 ? `        c += texture(src, vUv + texel * vec2(-1, -1)).rgb; c +=
       }`, { src: { value: null }, prev: { value: null }, texel: { value: new THREE.Vector2() }, radius: { value: 1 } });
     this.final = new FSPass(/* glsl */ `
       uniform sampler2D src; uniform sampler2D bloomTex; uniform sampler2D haloTex; uniform sampler2D hudTex;
-      uniform float exposure, bloom, halation, ca, grain, vignette, hud, fade, flash, time, zoom, invert;
+      uniform float exposure, bloom, halation, ca, grain, vignette, hud, fade, flash, time, zoom, invert, kal, kalMix, smear;
       uniform vec2 shake; uniform vec2 res;
       ${SHOULDER_GLSL}
       void main() {
         vec2 uv = (vUv - 0.5) / zoom + 0.5 - shake / res;
+        if (kal > 0.5 && kalMix > 0.0) {
+          vec2 q = (uv - 0.5) * vec2(res.x / res.y, 1.0);
+          float r = length(q), a = atan(q.y, q.x);
+          float seg = 6.28318 / kal;
+          a = mod(a + time * 0.15, seg); a = min(a, seg - a);
+          vec2 k = vec2(cos(a), sin(a)) * r / vec2(res.x / res.y, 1.0) + 0.5;
+          uv = mix(uv, k, kalMix);
+        }
         vec2 dc = uv - 0.5;
         float r2 = dot(dc * vec2(res.x / res.y, 1.0), dc * vec2(res.x / res.y, 1.0));
         vec2 off = dc * r2 * ca / res.x * 4.0;
@@ -135,17 +134,27 @@ ${SCALE === 1 ? `        c += texture(src, vUv + texel * vec2(-1, -1)).rgb; c +=
         col.r = texture(src, uv + off).r;
         col.g = texture(src, uv).g;
         col.b = texture(src, uv - off).b;
+        if (smear > 0.0) {
+          // pixel-sort-ish: drag the brightest pixel within a row segment
+          vec3 m = col;
+          for (int i = 1; i <= 24; i++) {
+            vec3 s2 = texture(src, uv - vec2(float(i) * smear / 24.0 / res.x, 0.0)).rgb;
+            float w = step(luma(m), luma(s2));
+            m = mix(m, s2 * (1.0 - float(i) / 30.0), w);
+          }
+          col = max(col, m);
+        }
         vec3 bl = texture(bloomTex, uv).rgb;
         vec3 ha = texture(haloTex, uv).rgb;
         col += bl * bloom;
-        col += vec3(1.0, 0.18, 0.04) * luma(ha) * halation;
+        col += vec3(1.0, 0.42, 0.16) * luma(ha) * halation;
         col *= exposure;
         // HUD is composited in linear space before the shoulder so it gets grain & vignette too
         vec4 h = texture(hudTex, vUv);
         col = mix(col, h.rgb / max(h.a, 1e-4), h.a * hud);
         col = shoulder(col);
         col = mix(col, vec3(0.8515) - col * 0.84, invert); // ink<->bone in linear-ish space
-        col += C_BONE * flash;
+        col += C_PAPER * flash;
         // vignette
         float v = smoothstep(0.95, 0.25, length(dc * vec2(1.0, 0.8)));
         col *= mix(1.0, v, vignette);
@@ -166,7 +175,7 @@ ${SCALE === 1 ? `        float g1 = hash12(gl_FragCoord.xy + fract(time * 13.37)
       src: { value: null }, bloomTex: { value: null }, haloTex: { value: null }, hudTex: { value: null },
       exposure: { value: 1 }, bloom: { value: 0.5 }, halation: { value: 0.2 }, ca: { value: 1 }, grain: { value: 0.05 },
       vignette: { value: 0.3 }, hud: { value: 1 }, fade: { value: 0 }, flash: { value: 0 }, time: { value: 0 },
-      zoom: { value: 1 }, invert: { value: 0 }, shake: { value: new THREE.Vector2() }, res: { value: new THREE.Vector2(W, H) },
+      zoom: { value: 1 }, invert: { value: 0 }, kal: { value: 0 }, kalMix: { value: 0 }, smear: { value: 0 }, shake: { value: new THREE.Vector2() }, res: { value: new THREE.Vector2(W, H) },
     });
   }
 
@@ -212,6 +221,7 @@ ${SCALE === 1 ? `        float g1 = hash12(gl_FragCoord.xy + fract(time * 13.37)
     f.time!.value = time;
     f.zoom!.value = p.zoom;
     f.invert!.value = p.invert;
+    f.kal!.value = p.kaleido ?? 0; f.kalMix!.value = p.kaleidoMix ?? 0; f.smear!.value = p.smear ?? 0;
     (f.shake!.value as THREE.Vector2).set(p.shake[0], p.shake[1]);
     this.final.render(renderer, out);
   }

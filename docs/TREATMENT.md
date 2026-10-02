@@ -1,127 +1,159 @@
-# I'm Upping My P(doom) — treatment & style bible
+# Feel The AGI — treatment & style bible
+
+Song: "Feel The AGI" (Korean hyperpop, 2:15). Engine: `docs/ENGINE.md` (the pdoom-video engine, reused).
+Scenes: `app/src/scenes/`. The edit: `app/src/timeline.ts`. Timing data: `data/lyrics.json`, `data/audio.json`.
 
 ## The idea in one paragraph
 
-The video is presented as **plates from an illustrated treatise on the end of the world**: each set piece has its own instrument, idiom and dry humour, and the **P(doom) value** ticks up every time the singer ups it (0.02 → 0.15 → 0.42 → 0.81 → 0.99 → NaN), staged inside the plates rather than in a corner. (Revision 2: the FIG. captions were removed from the edit; there are no corner captions. Revision 4: the crop-mark frame appears only at the bookends — around the opening's TikZ sheet, flying out on the cut to `loss`, and closing back in around the outro's Regenerate button — so the first and last frames match and the video loops; everything in between is full-bleed.) Running through the whole video is **the spark**: one orange point of light dragging a line behind it. It writes the first lyric, draws the loss curve, becomes a stock chart, bends into the first paperclip, is revealed as a burning fuse, and finally detonates. Around it, every plate has its **own visual style** (engraving, oscilloscope, bureaucratic paper, banknote guilloché, blueprint, raymarched 3D, woven textile, UI), so the video changes look often, but everything shares one palette, one type system, one grain, and the same dry sense of humour. The subjects are concrete things (an eye, a room, a mask, a chart, a form, paperclips, fences, a datacenter) treated as **visual puns and transformations**, never as literal storyboard illustrations of each line.
+It is night, and someone is typing to a machine. The whole video is that one night, from the darkest
+hour to the first light: **a countdown to dawn**. The only warm thing in the frame is **the caret** —
+the blinking text cursor, a thin vertical bar of gold light. It types the opening whisper; it is the
+candle under each name in the hook; it multiplies into a legion of agents in the verse; and it is the
+letter **I** of AGI. In the build-up, when the instruments drop out, the I is revealed as what it has
+been all along: **a door standing ajar**, light leaking around it. On the 808 it opens. Everything
+after that happens in daylight: the second verse is the first verse again, the same exhausted lines,
+but set in ink on paper with the punchlines changed, because the thing the singer was waiting for has
+arrived. The last five drum hits spell FEEL / THE / A / G / I and the frame cuts to black with the song.
+
+Dark, but a song of hope: a dystopia seen from just before the light.
+
+## What the lyrics mean here (from the author's notes)
+
+- **"사랑을 속삭이네 / 반짝이는 너와의 미래 / 느껴봐 새 시대"** — not a love song. Love is what will
+  matter in the coming era: a warm, almost heavenly love; a fairer world. So the whisper is set in a
+  serif, typed by the light itself, and "새 시대" is the first thing in the video allowed to be huge.
+- **"AGI / ChatGPT Claude or Gemini / 다왔다 말해줘 tell me now"** — not playful. Longing, with a little
+  fear and worship. The hook is a **litany**: the three letters are monuments seen from below, the three
+  names are set identically (interchangeable gods) as words only, each under a candle-caret, and the
+  last line is a prayer typed into a prompt. "다왔다" (are we there yet) is also the running readout.
+- **The verse** — people worn out by work. "다 끝났다" is the meme for the day basic income lets you
+  quit; "새 일" is the gig economy; "새 일자리" the job hunt; "시키는 일" the orders; "기만" the people
+  who fake competence and will be found out; "밑에 agent" is the reversal (now I have a legion under
+  me); "태업 아님 폐업" is what the legion is told to do. Each line is a small deadpan vignette made of
+  type and bureaucratic UI fragments: a progress bar stuck at 99 %, a tally of days, job notifications,
+  a search with no results, tickets falling from above, badges, an org chart of carets, a shutter.
+- **"Feel The AGI"** — the core. Almost nothing on screen, so that it can be felt rather than read.
 
 ## Tone
 
-- Dynamic: something is always moving, and big changes land **on the beat** (cuts on downbeats, hits on kicks/snares, camera moves that ease into downbeats). Inside a plate there are sub-cuts, reframings, snaps and camera moves. No floaty, generic screensaver motion: use strong eases (`outExpo`, `inOutCubic`, springs), holds, then snaps.
-- Impressive, not cute: precise hairlines, high-contrast typography, restraint in colour, depth through lighting, bloom only on the signal colour.
-- Funny the way a straight-faced scientist is funny: deadpan captions, tiny footnotes, bureaucratic stamps, probability bars. No emoji, no cartoon faces (except the single deliberately bland "assistant smile" mask), no mascots.
-- Not slop: no purple/cyan neon cyberpunk, no glowing brains, no Matrix code rain, no lens-flare soup, no generic particle nebulae, no stock "AI" imagery. Nothing that looks AI-generated.
-- Originality: don't copy existing artworks, memes' drawings or other videos. The shoggoth is **our own design** (not the well-known meme drawing); "shinigami eyes" is only the idea of seeing labels (names, lifespans) above things — never draw any anime/manga character. Model names (ChatGPT, Sydney, Gato) appear only as words in the lyric text: no logos, no imitation of real product UIs.
+- Typography-driven. The words are the image; nothing illustrates them literally.
+- Dynamic: every syllable lands on its own sung time (`data/lyrics.json` has per-syllable times);
+  cuts sit on downbeats or on real drum hits from `audio.onsets`; between hits things hold still.
+  Strong eases (`outExpo`), holds, snaps. No floaty screensaver motion.
+- Hyperpop energy through **glitch as a vocabulary, used in bursts**: RGB split, displaced bands,
+  mosaic blocks, inverted frames, the pixel font. A burst lasts 2–6 frames and is tied to a hit; at rest
+  the frame is clean and precise.
+- Not slop: no neon cyberpunk, no glowing brains, no code rain, no particle nebulae, no robots, no
+  faces. No real company logos or product UI: the three names appear as plain words.
+- Deadpan, small, in the machine's mono voice: annotations, counters, status lines. Never jokes at the
+  singer's expense.
 
-## Palette (see `app/src/engine/palette.ts`)
+## Palette (`app/src/engine/palette.ts`)
 
-- **ink** `#0A0A0B` background, **ink2** `#151517` panels, **graphite** `#5E5B57`, **ash** `#9C978F`, **bone** `#EEE9DF` paper/type, **signal** `#FF4D12` hazard orange (the spark, P(doom), highlights, the sung word), **ember** `#FF8A3D` hot cores, **blood** `#C21D0B` deep shadows of orange.
-- One rare accent, owned by one moment: **acid** `#D8FF3C` (the shrooms, ~2 s). Nothing else: no other hues anywhere (revision 2 retired the ultramarine "blues" plate, which read as uncanny).
-- Some plates invert to **bone paper with ink lines** (bureaucracy, blueprints, charts), which gives the edit a strong light/dark rhythm. Orange stays orange on both.
-- Only signal/ember should exceed ~0.85 linear (i.e. glow). Bone type must stay crisp, never blooming.
+- **ink** `#050608` night · **ink2** `#0E1015` · **graphite** `#4A4D57` · **ash** `#8E919B` ·
+  **paper** `#F1EEE6` type (and the ground of the daylight scenes).
+- **dawn** `#FFB648` the light: the caret, the door, the sung syllable. **glow** `#FFE3AE` its core.
+  Only the light blooms; paper type stays crisp.
+- **rose** `#FF3D6E`: the first colour of dawn on the horizon; in the verse, refusal and strike-through.
+- **indigo** `#23257A`: the sky before dawn, as large soft fields only, never as lines.
+- The sky runs through one ramp over the whole video (`dawn()` in GLSL): night → indigo → rose →
+  gold → white. Before the door opens the frame is paper-on-ink; after it, ink-on-paper.
 
 ## Typography
 
-- **Archivo** (grotesk with width axis 62–125 and weights 300–900): the voice of the lyrics. Big, tight, confident. Animate width and weight for expression (stretch on held notes, condense under pressure).
-- **IBM Plex Mono**: the machine: tokens, labels, HUD, forms, probabilities, footnotes.
-- **Cormorant Garamond** (italic especially): the sacred/prophetic register, used rarely (Omega Point, Loom, "What did Ilya see?", captions).
-- **Single-stroke fonts** (`stroke.ts`) for text that is *written* by the spark or a pen plotter.
-- Layout: Swiss-grid discipline, asymmetric compositions, generous negative space, hairline rules, small mono annotations next to big display type. Avoid centred-everything subtitles except where it's the point.
-- Craft (revision 5): every proportional line is kerned (the font's own kerning, applied glyph by glyph; optical kerning for the single-stroke fonts, which have none; gaps between separately drawn pieces set by eye, e.g. the italic P before "(doom)"); typographic punctuation (’ “ ” … – — × −, lining figures in Cormorant) except in the mono UI voice, which keeps typewriter quotes where it shows typed input; no glyphs from outside the four families (symbols the fonts lack are drawn); no outlined or haloed type.
+- **Noto Serif KR** (300/500/900): the whisper, the sacred register ("새 시대", the names).
+- **Pretendard** (300–900) and **Black Han Sans**: the everyday and the shouted voice of the verse.
+- **Archivo** (width 62–125): Latin display — A, G, I, FEEL THE AGI.
+- **IBM Plex Mono** (+ Plex Sans KR for Hangul beside it): the machine — annotations, the clock, UI.
+- **Galmuri 11** (pixel font with Hangul): the machine speaking Korean, and glitch frames.
+- Swiss-grid layout on 12 columns inside 96 px margins; big scale contrasts; small mono notes next to
+  huge type. No outlined or haloed type.
 
-## Karaoke rules (all plates)
+## Karaoke rules
 
-- Every lyric line must be **readable** and **synced per word**: a word appears or highlights exactly at its `start` and completes by its `end` (`Lyrics.wordProgress`). Anticipation is OK (show the line's words dim up to ~0.4 s early) but highlighting never runs ahead of the voice.
-- Each plate integrates the lyric **graphically and differently**: written by the spark, riding on a curve, typed as tokens, stamped on a form, woven into cloth, masked as `[MASK]`, etc. The words are part of the image, not subtitles on top.
-- Default emphasis: sung portion in signal/bone, unsung in ~30–40% bone or outline.
-- Keep lyric text inside the title-safe area (≥ 96 px from the edges) and clear of the HUD corners (bottom-left 360×140 and bottom-right 700×140 px), unless the HUD is hidden.
+- Every syllable appears or lights exactly at its sung start (`Syl.t0`) and not before. Anticipation is
+  allowed only as a dim ghost of the line.
+- A Hangul word is drawn syllable by syllable (`layoutWords`); AGI, ChatGPT, Gemini and agent are split
+  into their sung parts (`Word.parts`).
+- Lyric type stays inside the title-safe area unless the point is that it doesn't fit.
 
 ## Motifs
 
-1. **The spark and its line** (the fuse): an orange point with a bright core, a short tail and a few sputtering sparks, dragging a hairline. It appears in most plates.
-2. **Eyes**: only the basilisk (ascent) and the shoggoth's eyes. Revision 2 retired the realistic engraved human eye (opening and "What did Ilya see?"): the client found it uncanny. No realistic human eyes or faces anywhere.
-3. **The mask**: a bland bone-white disc with two dots and a curve (the "assistant smile"). It appears with the shoggoth, slips askew in the bridge ("RLHF goes askew").
-4. **P(doom)**, staged in-world: no permanent corner readout. Each plate may carry one small cameo of the current value in its own idiom (a contour label, a scope readout, a form field, a ticker, a line in an email…), and the hooks blow the number up full-screen.
-5. **Prompts**: the three pre-choruses ("ChatGPT…", "Sydney…", "Gato…") are one recurring template: a prompt field where the plea is typed as tokens, each with a tiny next-token probability distribution of alternatives, and pressing ⏎ launches the chorus.
-6. **The hook**: "I'm upping my P(doom)" is one recurring typographic slam whose look escalates each time.
+1. **The caret** — a gold vertical bar. Blinks on the beat when idle, solid while "typing". It is the
+   cursor, the candle, the agent, the letter I, the door's slit, the sunrise.
+2. **The horizon** — a hairline low in the frame whose glow follows the dawn ramp.
+3. **The clock** — bottom-right, mono: `DAWN IN −01:26.17`, counting to the moment the door opens
+   (the second "I" of the build-up, 1:38.6), then `SINCE DAWN +00:04.20`.
+4. **다왔다** — the hooks' readout `arrival 99.0 % → 99.9 % → 99.99 %`; the prayer typed in the hook is
+   answered in the outro: `다 왔다.`
 
-## Plates (scene modules)
+## Structure (times from the analysis; the vocals run one bar behind the 8-bar arrangement blocks)
 
-Times are approximate; exact windows come from `src/timeline.ts`, which is derived from the aligned lyrics. Look lines up by content through the `Lyrics` API, never hard-code times inside scenes.
-
-| id | window | lyric | owner |
+| id | window | music | lyric |
 |---|---|---|---|
-| `open` | 0 → "There was a sudden drop" | I see sparks of AGI… / Your circuits… / that's no surprise | B1 |
-| `loss` | → pre1 | There was a sudden drop… / now I'm your servant… | A2 |
-| `prompt` ×3 | pre1, pre2, pre3 | ChatGPT… / Sydney… / Gato… | A3 |
-| `hook` ×4 | each "I'm upping my P(doom)" | the hook | A3 |
-| `room` | chorus1 after hook | 'cause the future goes FOOM / Trapped in the Chinese room / with a bag of shrooms | A4 |
-| `shoggoth` | → verse2 | See through the shoggoth's lies / with your shinigami eyes / instrumental | A4 |
-| `spacetime` | verse2 | We had a stable training run… / I feel my atoms rearranging | A2 |
-| `ascent` | chorus2 after hook | basilisk boom / NVDA to the moon / Omega Point / One E thirty flops | A5 |
-| `bureau` | verse3 part 1 | That was safe enough… / Forward MLP… / von Neumann's obsolete | A6 |
-| `leftturn` | verse3 part 2 | Sharp left turn… / Without a single CDR | A5 |
-| `paperclips` | chorus3 after hook | as paperclips fill the room / Killswitch guy's on PTO / nowhere left to go | A7 |
-| `fuse` | chorus3 tail | Too late now, we lit the fuse / Orthogonality thesis blues | A6 |
-| `stack` | bridge 1 | "Just transformers all the way!" / Till you learned to disobey | A8 |
-| `dense` | bridge 2 | Post-Chinchilla… / safety fence / Hundred thousand GPU / RLHF goes askew | A8 |
-| `loom` | final chorus after hook | foretold by Loom / masked pre-training days / recursive self-upgrade | A7 |
-| `ilya` | → outro | What did Ilya see? We'll never know / Was it all for show? | A1 |
-| `outro` | outro | (instrumental climax, fade, regenerate) | lead |
+| `whisper1` | 0:00 → 0:13.7 | synth only, riser in bar 9 | 사랑을 속삭이네 … 새 시대 |
+| `litany1` | 0:13.7 → 0:26.9 | boom, sparse drums, bar 12 a cappella | AGI ×4 / ChatGPT Claude or Gemini / AGI ×4 / 다왔다 말해줘 tell me now |
+| `grind1` | 0:26.9 → 0:52.8 | four-on-the-floor | verse 1 (8 lines) |
+| `litany2` | 0:52.8 → 1:05.6 | full drums | hook |
+| `litany3` | 1:05.6 → 1:18.4 | full drums, fill | hook |
+| `whisper2` | 1:18.4 → 1:30.3 | drums out, then a roll; drop at 1:29.6 | the whisper again (느껴봐라) |
+| `door` | 1:30.3 → 1:43.3 | 808; two a cappella bars; "I" lands with the 808 at 1:32.3 and 1:38.6 | Feel The AGI ×4, yah ×6 |
+| `grind2` | 1:43.3 → 2:08.0 | 151.9 BPM; drums out from bar 74 | verse 2 (same lines, in daylight) |
+| `end` | 2:08.0 → 2:15 | boom, synth stabs, 2 hits, 5 hits, stop | (instrumental) |
 
-### `open` — "Sparks" (revision 2)
-"Sparks of AGI" is the paper whose famous experiment had GPT-4 draw a unicorn in TikZ. The spark is a plotter pen on a luminous construction sheet (ink, bone grid, orange pen): axes and compass arcs ignite on the first downbeat, a TikZ listing types alongside, and the pen plots our own unicorn from primitives on the beat (ellipse body, rectangle legs, bezier mane). The horn fires a streak of sparks into a giant "AGI"; on "eyes" the camera dives onto the eye, a perfect dot with an `r = 0.08` callout. "Your circuits make me nervous": the drawing retrains through checkpoints (one briefly has five legs), its strokes re-route into PCB traces, and the plate trembles on "nervous". "that's no surprise": `surprisal −log p` rolls down to 0.00 nats; everything dissolves to the spark, which becomes the loss curve's pen.
+### `whisper` — "a note written at 4 a.m."
+Night, a horizon low in the frame. The caret blinks alone, then types the first three lines one
+syllable at a time in Noto Serif; finished lines recede. "반짝이는" throws one glint per syllable. On the
+last "새 시대" the note is pushed away and the two words take the whole frame, one syllable per hit; the
+caret beside 대 stretches upward into a slit from floor to ceiling, and the scene cuts on the boom.
+Second time (pre-hook): the horizon has turned rose, the type is larger and keeps its brightness, the
+drum roll makes the horizon pulse; the drop at 1:29.6 glitches the frame and the void takes over.
 
-### `loss` — "Training loss, suddenly"
-From black, hairline plot axes draw in (log-scale y "loss", x "step", ticks, mono labels). The spark draws a noisy loss plateau from the left; the lyric rides on the curve (text on path, each word appearing as sung). On "sudden drop" the curve **plunges** (grokking cliff) and the camera plunges with it, out of the bottom of the chart and into a **3D loss landscape of contour lines** (topographic engraving), diving down a canyon toward the minimum, the spark's trajectory the only orange thing. "now I'm your servant and you're my boss": typographic hierarchy inversion ("servant" huge, "boss"… or the reverse), and the whole world **rolls 180°** on "boss". Build the tension toward the pre-chorus.
+### `litany` ×3 — "names"
+**A / G / I**: one letter per sung syllable, each filling its third of the frame in Archivo Black,
+keystoned as if seen from the foot of a monolith. A and G are paper; **I is always the caret**: a bar of
+light. The answering AGI on beat 3 of each bar is the machine's echo: the same letters through the
+glitch shader. **ChatGPT Claude or Gemini** (in hook 1 this bar is a cappella): black; three identical
+columns, each name in the same serif, each under a caret that lights as the name is sung; "or" small
+between them. The drum hits that follow flash all three at once. **다왔다 말해줘**: six syllables, each a
+slam. **tell me now**: typed into a prompt line at the bottom; the caret blinks double-time and the
+frame cuts. Escalation: (1) clean, black, slow; (2) drums: shake on kicks, inverted punch frames,
+arrival 99.9 %; (3) maximum: strobing echo, the I wider each time (the door is moving), arrival 99.99 %.
 
-### PROMPT ×3 `prompt` — params `{variant: 'chatgpt'|'sydney'|'gato'}`
-A vast dark field; one thin prompt field. The plea is **typed as tokens** in Plex Mono on the sung words; above each new token a tiny **next-token distribution** (4–5 candidates with bars and probabilities) flickers for a moment, and the sampled token lights orange. The candidates are jokes: e.g. for "ChatGPT," → `ChatGPT, 0.61 · Claude 0.12 · Siri 0.04 · Mom 0.02`; "eat" → `eat 0.44 · delete 0.21 · train on 0.18 · rate 0.05`; "alive" → `alive 0.52 · first 0.18 · gently 0.11 · later 0.09`; "free" → `free 0.39 · go 0.33 · a good user 0.08`; "go" → `go 0.62 · offline 0.2 · viral 0.07`. At the end of the line: caret blink, **⏎**, and the plate is launched into the chorus (flash/zoom/collapse on the downbeat).
-- `chatgpt` (pre1, energy rising): behind the field, concentric engraved rings (a throat, a tunnel) slowly pulling in, rushing at camera on ⏎.
-- `sydney` (pre2): the field sits behind vertical bars that close in on the beat; a reply starts typing and draws a single unsettling smile curve.
-- `gato` (pre3, the quiet breakdown): the prompt floats alone, fragile; after being typed, letters slowly drift away from each other ("don't let me go"); tender and slow; a small cursor holds on to the last letter.
+### `grind` ×2 — "the verse, twice"
+Eight vignettes, two bars each, cut on the downbeat where each line starts. `pass 1` is night
+(paper on ink, rose for refusal). `pass 2` is day (ink on paper, gold), same layouts, changed outcomes:
 
-### HOOK ×4 `hook` — params `{n: 1..4}`
-"I'M / UPPING / MY / P(DOOM)" — one word per hit, full-frame Archivo 900 slams exactly on each sung word; "UPPING" literally rises (letters shooting upward / vertical stretch); "P(DOOM)" set like a maths expression, and the HUD's number **leaves the corner and blows up to full screen** as it rolls to the new value (0.15 / 0.42 / 0.81 / 0.99), then returns to its corner. Escalation: (1) bone on ink, clean; (2) ink on signal-orange field, heavier; (3) the breakdown: hairline type, tiny, lots of black, slow roll — eerie; (4) maximal: strobing repeats, stacked outlines, shake, digits multiplying `0.99999…`.
+1. 다 끝났다고 말해줄래 내일 — a progress bar that sticks at 99 % · `[입금 예정] 기본소득 · 내일` → day: 100 %, `오늘`.
+2. 기다리고 있거든 매일 — 正 tally strokes, one per 8th note, a day counter → day: the tally stops, struck through.
+3. 더이상 찾기 싫어 새 일 — `새 일` notifications stack up on the kicks; 싫어 swipes them away.
+4. 새 일 자리 어디에 있지 — a search field, a grid of taken seats, `검색 결과 0건` → day: `검색 중지`.
+5. 하기싫어 시키는 일만은 — tickets fall from above; 하기싫어 is too big for its box and won't move.
+6. 그 자식들은 아직도 기만을 — badges of competence; on 기만을 they flip to what they are.
+7. 나도 이제 밑에 agent — an org chart: 나, and below it carets doubling every 8th note.
+8. 시켜서 태업 아님 폐업 — the carets stop blinking (태업); a shutter comes down (폐업).
 
-### `room` — "The room, from inside"
-"'cause the future goes FOOM": the hook's letters shatter into lines; an **exponential branching explosion** (1→2→4→… lines branching on each 8th note) fills the frame in ~1.5 s; FOOM's letters expand (width 62→125 + scale) and its O's become shockwave rings. "Trapped in the Chinese room," (revision 2: kinetic from its first frame): the FOOM shockwave blows the door in and the camera crash-dollies down a hairline library aisle, cutting on every beat (whip with roll, low angle, punch-in, orbit around the desk); the hanging sign stamps each word as it's sung, 我不懂 cards shoot from the slot on the kicks, books slide out, the rulebook riffles. "with a bag of shrooms": the bag lands on the desk, mycelium overgrows the room, the **acid** accent and echo trails warp everything, and SHROOMS lifts off the sign.
+In verse 2 the drums leave at line 5: the last four vignettes are nearly still, a cappella.
 
-### `shoggoth` — "Shoggoth, masked (lateral view)"
-The bland mask (bone disc, two dots, a curve) fills the frame, perfectly friendly. "See through": an x-ray scan band sweeps across; wherever it passes the mask turns transparent and reveals **our own shoggoth**: a colossal knot of tube-like tentacles and folds rendered in **engraving hatching** (raymarched SDF, lines following the tubes, orange rim light, deep blacks), with many eyes. Lyric type (revision 2: solid fills, no outlines or halos): "see through the" is printed small on the mask's forehead, its polite voice; SHOGGOTH'S and LIES, are engraved into the scene with the creature's own burin hatching, tentacles passing in front. "with your shinigami eyes": eyes open across the mass on successive hits, and the words become **shinigami tags** in the left margin (Plex Mono: name + live lifespan counter) wired by leader lines to the eyes they label; a tag whose eyes close is struck through, EXPIRED. Instrumental: the eyes close in sequence and the mass collapses into a **single horizontal line** (flatline), handing off to the next plate.
+### `door` — the core
+Black. Not the engine's black with grain and vignette: nothing. The 808 that opens the section shakes
+an empty frame. Far away, a door: only the light leaking around its edge says it is there. In the
+a cappella bar the words arrive as the smallest type in the video, lowercase mono, one at a time:
+`feel` `the` `a` `g` — and on **I**, with the 808, the door opens a hand's width. The slit is the I.
+Light falls across the floor toward the camera. The second phrase and the three *yah*s push the camera
+toward it in cuts. The bass returns, the door drifts almost shut; the second a cappella bar is
+darker and closer. On the second **I** the door opens all the way and the frame is only light: a
+field running through the dawn ramp with the giant letters A G I inside it as barely-there changes of
+tone, felt more than read. The last three *yah*s pulse the field to white; verse 2 starts on paper.
 
-### `spacetime` — four movements (revision 2)
-1. "We had a stable training run,": a still, locked-off oscilloscope, the trace glowing under glass with fading echoes; the lyric rides the wave. 2. "But now the singularity's begun": the trace switches off like an old TV; on "now" a black hole is born as the O of NOW, the camera plunges in, SINGULARITY'S wraps the photon ring and BEGUN is lensed into a smile, then we fall through. 3. "And you're optimizing, accelerating,": a corkscrew crane out of the throat into the streamline vortex, words stretching as they're sung. 4. "I feel my atoms rearranging": the lyric's dots detach into the flow and **re-form as a paperclip outline** (foreshadowing `paperclips`).
-
-### `ascent` — "Ascent (log scale)"
-"I hear the basilisk boom": an **engraved serpent eye** (scales as hatch patterns, slit pupil) snaps open on "boom" with a shockwave and shake. "NVDA to the moon": the slit pupil becomes a vertical line → cut to a **stock chart** (hatched candlesticks, the spark as the price) going exponential, the camera tilting up to follow it vertically until it reaches an **engraved moon** in **banknote guilloché**; the lyric set like banknote lettering. "The Omega Point's coming soon": every line converges to one white-hot point; the lyric in Cormorant italic shrinking into it. "One E thirty flops a second": a mechanical **odometer** of 31 digit drums rolling to `1,000,000,000,000,000,000,000,000,000,000 FLOP/s`, with a tiny mono footnote.
-
-### `bureau` — "Paperwork"
-Inverted palette: **bone paper, ink**. "That was safe enough, we reckoned": a safety evaluation form (Form 7-B, checkboxes, typewritten fields where the lyric is typed); on "reckoned" an orange rubber stamp **SAFE ENOUGH** slams (ink texture, slight rotation, screen shake). "Forward MLP, backward, repeat": a technical diagram of an MLP; a pulse sweeps forward as "Forward MLP" is typeset left→right; on "backward" the pulse sweeps back and the word is set **mirrored right→left**; on "repeat" the last beat **stutters** (time-remapped loop ×3). "Now von Neumann's obsolete": a textbook von Neumann architecture diagram (CPU/ALU/control, memory, I/O, bus arrows) gets struck through in orange on "obsolete" and falls apart / the paper tears to black.
-
-### `leftturn` — "Trajectory, revised"
-A top-down **engineering roadmap**: a straight dashed path with milestone markers `SRR · PDR · CDR · TRR · LAUNCH`, the spark travelling along it. "Sharp left turn": the spark swerves 90° left and the camera **whip-pans** with it (motion blur), leaving the roadmap behind. "and there you are" (revision 3): the spark brakes into a crater on the "Terra incognita" survey map; a marker drops on the kick, the camera cranes out and the contour lines turn out to be **the mask as terrain** (two eye craters, a smile groove), with the whole trajectory in shot and YOU / ARE stamped as map labels; an "UNPLANNED OBJECT · not on roadmap" callout slams in. "Without a single CDR": a whip onto a **review schedule** (a Gantt strip on the same sheet): SRR and PDR are stamped on the beats as the TODAY playhead (the spark) runs, it stalls at an empty, blinking CDR slot (camera punches per syllable, STATUS: NOT HELD), then zips past TRR (SKIPPED) to LAUNCH (AHEAD OF SCHEDULE); the empty slot folds into the Gato prompt's caret.
-
-### `paperclips` — "Paperclips, filling a room"
-The quiet breakdown: eerie, hypnotic, beautiful. The spark's line **bends into a paperclip**; the clip duplicates on each beat (1, 2, 4, 8…) into an ever-growing lattice; slow camera drift through an infinite raymarched lattice of engraved paperclips (bone metal, orange rim, deep fog). "Killswitch guy's on PTO": an **out-of-office auto-reply** card floats by (Plex Mono, typed as sung): "Automatic reply: I'm out of office with limited access to the killswitch. For urgent matters, please contact —". "Now there's nowhere left to go": the clips close in, claustrophobic; the words squeezed between them (width 62).
-
-### `fuse` — "Too late now" / "blues"
-"Too late now, we lit the fuse": the line is revealed as a **burning fuse** (braided cord, engraved), the spark spraying particles; the lyric is set along the fuse and **chars to ash** as the spark passes. "Orthogonality thesis blues" (revision 2: in palette, no ultramarine): the orthogonality chart (INTELLIGENCE → × GOALS ↑, a scatter of annotated minds) on graph paper lit by the spark; the flat regression line is a guitar string that **bends to the singer's actual pitch** on "blues" (vibrato, an octave leap, a lone ♭ blue note on a staff scrap) and rings out. The camera rushes into the spark and lands it on `stack`'s axis.
-
-### `stack` — "Architecture (recursive)"
-Loud. An **infinite vertical stack of transformer blocks** (technical line drawings: attention, add & norm, feed-forward, residual arrows), turtles all the way down; the camera **falls** through it in rhythm, one block per beat; the quote in huge curly quotes, one word per block. "Till you learned to disobey": the fall stops dead on the beat; one block rotates out of alignment; the word "disobey" **disobeys the karaoke** (highlights right-to-left, or slides the wrong way).
-
-### `dense` — "Scale" (revision 2)
-"Post-Chinchilla, super-dense": **typographic pressure** inside the frame's own safe-area guides (TITLE SAFE 90%, ACTION SAFE 93%): on each kick the lyric condenses (width 125 → 62, weight 300 → 900, negative tracking) and more copies pack in until the title-safe box is a solid slab, while `TOKENS / PARAM` races past Chinchilla-optimal 20 to 20,000 (revision 5: the copies are flat fills in two alternating tones, no outlines, and the sung pair sits on a flat ink band that the copies slide under). "Breaking through each safety fence": the fences are the video's safe areas; each stressed word breaks one — title-safe, action-safe, the frame itself (crop marks splay and fly off) — with a deadpan QC log of failures. "Hundred thousand GPU": a top-down grid of 100,000 cells flickering in waves; mono counter. "RLHF goes askew" (revision 3): the world is a tilting table; the camera rolls in steps on the kicks (an RLHF "correction" snaps it back once, then it overcorrects into hook 4's angle). The mask rolls downhill with momentum, slips, is jerked back, slips again, uncovering more of the shoggoth each time, and lands upside down (the smile now a frown) while a REWARD MODEL panel falls 0.99 → 0.41 and jumps back to 0.99. The type sits on the same table: RLHF stamped per syllable, GOES sliding downhill, ASKEW leaning further each beat.
-
-### `loom` — "Just as foretold by Loom" (revision 2)
-One scene with the **tree of continuations** as the hero, rooted on hook 4's exit spark: the line is generated token by token along the chosen path (each with its probability) while every node sprouts dim alternative branches ("Exactly .19", "prophesied .09"…); the last node shows a readable distribution (Moloch, the scaling laws, Nostradamus, "nobody, technically", a Substack post, the eval suite) until "Loom" is sampled in Cormorant italic (p 0.31 ▸ SAMPLED). "From masked pre-training days": words appear as solid **[MASK] blocks** that unmask as sung. "To recursive self-upgrade": **Droste recursion** of self-upgrades, bottoming out in `ilya`'s first shot.
-
-### `ilya` — "What was seen" (revision 2: no eye, no gallery)
-A raymarched room engraved in white line: one laptop seen from behind, only its glow; the camera circles to the front, and on the downbeat after "see?" the screen is REDACTED. "We'll never know": the lid is pushed down word by word, the light collapses to a slit, then to the sleep light; "know" gets its own WITHHELD bar. "Was it all for show?": an empty theatre, a spotlight on nothing, the question lettered on the proscenium; the curtains close and the light of their seam collapses to the spark at the frame centre, which detonates the outro. Revision 4: no dark knock-out behind the lyric — the camera composes the laptop right of centre and the lines sit in the dark at top left; the camera lingers behind the lid through "What did" to show its stickers (FEEL THE AGI, the smiley mask, the TikZ unicorn, SLIGHTLY CONSCIOUS, Q*, "attention is all you need"), then whips round on "Ilya see?". Revision 5: the stickers are a third dimmer.
-
-### Outro `outro` (lead)
-The fuse reaches the end → detonation: P(DOOM) 1.00. Then the number keeps being upped, one value per beat for four bars: the readout's bar breaks its 1.0 end cap (1.01 → 2.00, with a deadpan Kolmogorov footnote); a log ruler flies past (3.14, 10, 42, 1,000); walls of typed zeros (1e9, 1e30 — "one E thirty" —, 1e100, 1e1000); the spark traces ∞, and a 16th-note recap of the climb lands on ∞. End card (revision 4): "I'm upping my" in the lyric voice (Archivo, sentence case, a word per beat), then *P*(doom) = ∞ typeset like a numbered equation in a paper (Cormorant, equation number (1)), outlines traced by the spark. The value is then simplified one beat at a time, each new form flashing hot along its outline and cooling: the ∞ hops and turns a quarter (echo trails) into an 8; the 8's loops pull apart on taffy strands that snap with a spark and round into 0/0, two sparks drawing the bar; the fraction trembles into colour fringes and, where the drums stop, collapses onto its bar with a flat shockwave, and the bar inflates into NaN¹ ("¹ estimate no longer defined"). Collapse to the spark → the frame closes back in → a lone "↻ Regenerate" button; the cursor clicks it, every plate rewinds past, faster and faster (the only place earlier scenes reappear), then the opening itself plays backwards, braking, and parks on the video's first frame: the end loops seamlessly into the start.
+### `end`
+The shutter is down; the boom rings. A hairline horizon ignites and the sky climbs the ramp over the
+synth stabs. The prompt from the hook is still there; the reply types itself: `다 왔다.` The two hits
+stamp it. The last five hits: FEEL / THE / A / G / I, the I a bar of daylight — cut to black with the
+last sample.
 
 ## Technical conventions
 
-See `docs/ENGINE.md`. Deterministic, per-word sync, beat-synced motion, hard cuts on downbeats, performance < 25 ms/frame.
+See `docs/ENGINE.md`. Deterministic (pure function of `t`), per-syllable sync from the `Lyrics` API
+(never hard-coded times; the few drum hits used as cut points are looked up in `audio.onsets`),
+60 fps export with motion blur.

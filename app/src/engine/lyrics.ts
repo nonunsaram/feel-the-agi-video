@@ -6,7 +6,10 @@ export interface Word {
   start: number;
   end: number;
   conf?: number;
+  /** [start, end] of each sung unit of the word: one per Hangul syllable, or per spelled letter / part (see `parts`). */
   syl?: [number, number][];
+  /** The display piece of each unit in `syl` ('A','G','I' · 'Chat','G','P','T' · one Hangul syllable each). */
+  parts?: string[];
   /** filled in by Lyrics: */
   line: number;
   index: number; // index within line
@@ -14,11 +17,20 @@ export interface Word {
 }
 export interface Line {
   i: number;
+  /** Song section the line belongs to (intro, hook1, verse1, hook2, hook3, prehook, build, verse2). */
+  section?: string;
   text: string;
   start: number;
   end: number;
   words: Word[];
 }
+
+/**
+ * Every lyric time is shown this much before it is sung. A picture that changes a frame or two before
+ * the sound reads as "on the beat"; one that changes after it reads as late (and the vocal onsets in
+ * the data are the acoustic onsets, which the ear places slightly later than the attack).
+ */
+export const LEAD = 0.033;
 
 export class Lyrics {
   lines: Line[];
@@ -30,14 +42,19 @@ export class Lyrics {
       ...l,
       i: li,
       text: smart(l.text),
-      words: (l.words as any[]).map((w, wi) => ({ ...w, w: smart(w.w), line: li, index: wi, gi: 0 })),
+      start: l.start - LEAD, end: l.end - LEAD,
+      words: (l.words as any[]).map((w, wi) => ({
+        ...w, w: smart(w.w), line: li, index: wi, gi: 0,
+        start: w.start - LEAD, end: w.end - LEAD,
+        syl: w.syl?.map(([a, b]: [number, number]) => [a - LEAD, b - LEAD]),
+      })),
     }));
     this.words = this.lines.flatMap((l) => l.words);
     this.words.forEach((w, i) => (w.gi = i));
   }
 
   static async load(): Promise<Lyrics> {
-    for (const url of ['data/lyrics.json', 'data/lyrics.approx.json']) {
+    for (const url of ['data/lyrics.json']) {
       const r = await fetch(url);
       if (r.ok && (r.headers.get('content-type') ?? '').includes('json')) return new Lyrics(await r.json());
     }
@@ -79,7 +96,11 @@ export class Lyrics {
     for (const w of this.words) if (w.start <= t) best = w;
     return best;
   }
-  /** Words whose normalized text matches (e.g. 'p(doom)'). */
+  /** Lines of a section, in order. */
+  section(name: string): Line[] {
+    return this.lines.filter((l) => l.section === name);
+  }
+  /** Words whose normalized text matches (e.g. 'agi'). */
   findWords(s: string): Word[] {
     const q = norm(s);
     return this.words.filter((w) => norm(w.w) === q);
@@ -117,5 +138,5 @@ export class Lyrics {
   }
 }
 
-export const norm = (s: string) => s.toLowerCase().replace(/[^a-z0-9()]/g, '');
+export const norm = (s: string) => s.toLowerCase().replace(/[^a-z0-9()\uac00-\ud7a3]/g, '');
 const fold = (s: string) => s.toLowerCase().replace(/[\u2018\u2019]/g, "'").replace(/[\u201C\u201D]/g, '"');

@@ -1,4 +1,4 @@
-// DOOR — the build-up, the core of the video: "Feel The AGI" ×4, "yah" ×6.
+// DOOR — the build-up, the core of the video: "Feel the AGI" ×4, "yah" ×6.
 // A void. Far away, a door; only the light leaking around it says it is there. The words arrive as
 // the smallest type in the video. On each "I" of AGI the 808 lands and the door moves: the slit of
 // light IS the letter I.
@@ -215,7 +215,7 @@ export default class Door extends Scene {
     this.ctx.comp.draw(this.ctx.renderer, this.L.upload(), out);
     const h = hudBegin();
     if (inField && u.through!.value >= 0.5 && t < y[3]!) {
-      // through the door: the person small on the light, watching, until the last "Feel The AGI" is
+      // through the door: the person small on the light, watching, until the last "Feel the AGI" is
       // over (on the overlay, so the mandala's mirrors leave them whole); gone for the last yahs
       drawFigure(h, W / 2, H - 190, 120, POSE.lookUp!, { col: rgba('ink', 1), style: 'fill' });
     }

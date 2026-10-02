@@ -2,7 +2,7 @@
 
 > 요약 (한국어): 이 문서는 다른 코딩 에이전트(Codex 등)가 **틀은 그대로 두고 3D 구간만** 개선하도록 쓴 인수인계서입니다. 대상은 1절(0:27–0:52)과 2절(1:43–2:08)의 3D 장면, 특히 에이전트 구간입니다. 타임라인·가사 싱크·타이포 그리드·후처리는 건드리지 않습니다.
 
-This repo renders the music video for the song "Feel The AGI" (Korean hyperpop, 2:15) as code: a
+This repo renders the music video for the song "Feel the AGI" (Korean hyperpop, 2:15) as code: a
 TypeScript + three.js web app that draws any song time `t` deterministically and is exported to
 1080p60 by headless Chrome + ffmpeg. Read `docs/ENGINE.md` for the engine API (scenes, frames,
 audio/lyrics data, render commands). This file narrows that down to the one job you are here for.

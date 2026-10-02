@@ -1,6 +1,6 @@
-# Feel The AGI — treatment & style bible
+# Feel the AGI — treatment & style bible
 
-Song: "Feel The AGI" (Korean hyperpop, 2:15). Engine: `docs/ENGINE.md` (the pdoom-video engine, reused).
+Song: "Feel the AGI" (Korean hyperpop, 2:15). Engine: `docs/ENGINE.md` (the pdoom-video engine, reused).
 Scenes: `app/src/scenes/`. The edit: `app/src/timeline.ts`. Timing data: `data/lyrics.json`, `data/audio.json`.
 
 ## The idea in one paragraph
@@ -32,7 +32,7 @@ Dark, but a song of hope: a dystopia seen from just before the light.
   me); "태업 아님 폐업" is what the legion is told to do. Each line is a small deadpan vignette made of
   type and bureaucratic UI fragments: a progress bar stuck at 99 %, a tally of days, job notifications,
   a search with no results, tickets falling from above, badges, an org chart of carets, a shutter.
-- **"Feel The AGI"** — the core. Almost nothing on screen, so that it can be felt rather than read.
+- **"Feel the AGI"** — the core. Almost nothing on screen, so that it can be felt rather than read.
 
 ## Tone
 
@@ -97,7 +97,7 @@ Dark, but a song of hope: a dystopia seen from just before the light.
 | `litany2` | 0:52.8 → 1:05.6 | full drums | hook |
 | `litany3` | 1:05.6 → 1:18.4 | full drums, fill | hook |
 | `whisper2` | 1:18.4 → 1:30.3 | drums out, then a roll; drop at 1:29.6 | the whisper again (느껴봐라) |
-| `door` | 1:30.3 → 1:43.3 | 808; two a cappella bars; "I" lands with the 808 at 1:32.3 and 1:38.6 | Feel The AGI ×4, yah ×6 |
+| `door` | 1:30.3 → 1:43.3 | 808; two a cappella bars; "I" lands with the 808 at 1:32.3 and 1:38.6 | Feel the AGI ×4, yah ×6 |
 | `grind2` | 1:43.3 → 2:08.0 | 151.9 BPM; drums out from bar 74 | verse 2 (same lines, in daylight) |
 | `end` | 2:08.0 → 2:15 | boom, synth stabs, 2 hits, 5 hits, stop | (instrumental) |
 

@@ -7,7 +7,7 @@ import type { Lyrics } from '../engine/lyrics';
 import { M } from './_kit';
 
 let T0: number | null = null;
-/** The time the door opens: the "I" of the third "Feel The AGI". */
+/** The time the door opens: the "I" of the third "Feel the AGI". */
 export function dawnTime(ly: Lyrics) {
   if (T0 === null) {
     const l = ly.section('build').filter((x) => /Feel/.test(x.text))[2];

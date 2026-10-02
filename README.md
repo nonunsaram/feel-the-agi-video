@@ -1,6 +1,6 @@
-# Feel The AGI — code-rendered music video
+# Feel the AGI — code-rendered music video
 
-A music video for the song **"Feel The AGI"** (Korean hyperpop, 2:15) in which every frame is code: a
+A music video for the song **"Feel the AGI"** (Korean hyperpop, 2:15) in which every frame is code: a
 deterministic function of song time, synced to the sung syllables, rendered offline to 4K60.
 Humans are special and not special; AI is a companion and the sum of human heritage — the video tells
 that story with a pictogram person, liquid-gold type, a prism, a door of light and a legion of
@@ -100,11 +100,11 @@ uv run python analyze_ft.py --plots  # data/audio.json
 **The code is yours.** Fork it, change it, put your own song in it and make your own music video —
 commercially too. It's MIT: just keep the copyright notice. That's the whole point of sharing it.
 
-**The song comes with a few strings.** "Feel The AGI" — the track in `audio/`, its lyrics and
+**The song comes with a few strings.** "Feel the AGI" — the track in `audio/`, its lyrics and
 melody, and this music video, which carries it — is a person's own work, so it isn't part of the
 "do anything" deal. It's under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/):
 you're welcome to play it, share it or remix it for fun, as long as you credit
-"Feel The AGI" by 노는사람 (nonunsaram), don't make money from it, and share what you make the same
+"Feel the AGI" by 노는사람 (nonunsaram), don't make money from it, and share what you make the same
 way. The `.wav` is here only so you can hit render and see the video come out exactly as it should.
 
 | | License | In one line |

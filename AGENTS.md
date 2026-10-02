@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Code-rendered music video for "Feel The AGI" (TypeScript + three.js in `app/`, deterministic in song
+Code-rendered music video for "Feel the AGI" (TypeScript + three.js in `app/`, deterministic in song
 time, exported to 1080p60 with headless Chrome + ffmpeg).
 
 - Engine guide: `docs/ENGINE.md`. Treatment: `docs/TREATMENT.md`.
